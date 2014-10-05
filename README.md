@@ -2,6 +2,10 @@
 
 Stub for WordPress themes/plugins that require PHP vX.x+ (i.e. a minimum version that you define).
 
+![screenshot](screenshot.png)
+
+---
+
 ### Example Usage in a Typical WordPress Theme/Plugin File
 
 ```php
@@ -65,7 +69,7 @@ else wp_php_rv_custom_notice('My Plugin requires PHP v5.3+'); // Custom Dashboar
 
 ---
 
-### What if Multiple Themes/Plugins Use `wp_php_rv()` Functions?
+### What if Multiple Themes/Plugins Use This?
 
 This is fine! :-) The `wp-php-rv.php` file uses `function_exists()` as a wrapper; which allows it to be included any number of times, and by any number of plugins; and also from any number of locations. **The only thing to remember**, is that you MUST be sure to define `$GLOBALS['wp_php_rv']` each time; i.e. each time you `include('wp-php-rv.php')` or `require('wp-php-rv.php')`.
 
