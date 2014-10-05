@@ -91,4 +91,5 @@ This project is now on Floobits too! [Watch us code](https://floobits.com/jaswsi
 ---
 
 Copyright: © 2014 [WebSharks, Inc.](http://www.websharks-inc.com/bizdev/) (coded in the USA)
+
 Released under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl-2.0.html).
