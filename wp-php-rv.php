@@ -65,7 +65,7 @@ if(!function_exists('wp_php_rv_notice'))
 			$notice .= ' '.sprintf(__('<strong>It requires PHP v%1$s+.</strong>', $software_text_domain), esc_html($GLOBALS['wp_php_rv'])).'<br />';
 			$notice .= ' '.sprintf(__('&#8627; You\'re currently running an older copy of PHP v%1$s.', $software_text_domain), esc_html(PHP_VERSION)).'<br />';
 			$notice .= ' '.__('<em>A simple update is necessary. Please ask your hosting company to help resolve this quickly.</em>', $software_text_domain).'<br />';
-			$notice .= ' '.sprintf(__('<em>To remove this message, please upgrade. Or, remove %1$s from WordPress.</em>', $software_text_domain), esc_html($software_name));
+			$notice .= ' '.sprintf(__('<em>To remove this message, please upgrade PHP. Or, remove %1$s from WordPress.</em>', $software_text_domain), esc_html($software_name));
 		}
 		add_action($notice_action, create_function('', 'if(!current_user_can(\''.str_replace("'", "\\'", $notice_cap).'\'))'.
 		                                               '   return;'."\n". // User missing capability.
