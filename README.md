@@ -86,6 +86,24 @@ The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is sp
 
 ---
 
+### Can I Test for Required PHP Extensions Too?
+
+Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or an array with both a required version and a nested array of required PHP extensions. The easiest way to show how this works is by example (as seen below). Note that your array of required PHP extensions must be compatible with PHP\'s [`extension_loaded()`](http://php.net/manual/en/function.extension-loaded.php) function.
+
+```
+<?php
+$GLOBALS['wp_php_rv']['rv'] = '5.3';
+$GLOBALS['wp_php_rv']['re'] = array('curl', 'mbstring');
+
+if(require(dirname(__FILE__).'/wp-php-rv.php')) // `TRUE` if running PHP vX.x+ w/ all required extensions.
+	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
+else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software specifically.
+```
+
+_**Note**: with this technique, the dashboard notice may vary depending on the scenario. If only the required PHP version is missing, the dashboard notice will mention this only. If the required PHP version is satisified, but the PHP installation is missing one or more required PHP extensions, only those required extensions will be mentioned to a site owner. If neither can be satisfied (i.e. the required version of PHP is missing, AND one or more required PHP extensions are missing too), the dashboard notice will mention both the required version of PHP, and include a list of the required PHP extensions they are missing. It's quite dynamic! ~ Also, when/if missing PHP extensions are listed for a site owner, they're automatically linked up, leading a site owner to the relevant section of the manual at PHP.net._
+
+---
+
 This project is now on Floobits too! [Watch us code](https://floobits.com/jaswsinc/wp-php53/redirect) in real-time :-) <a href="https://floobits.com/jaswsinc/wp-php53/redirect"><img alt="Floobits status" width="100" height="40" src="https://floobits.com/jaswsinc/wp-php53.png" align="right" /></a>
 
 ---
