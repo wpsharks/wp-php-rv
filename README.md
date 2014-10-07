@@ -88,7 +88,7 @@ The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is sp
 
 ### Can I Test for Required PHP Extensions Too?
 
-Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or an array with both a required version and a nested array of required PHP extensions. The easiest way to show how this works is by example (as seen below). Note that your array of required PHP extensions must be compatible with PHP\'s [`extension_loaded()`](http://php.net/manual/en/function.extension-loaded.php) function.
+Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or an array with both a required version and a nested array of required PHP extensions. The easiest way to show how this works is by example (as seen below). Note that your array of required PHP extensions must be compatible with PHP's [`extension_loaded()`](http://php.net/manual/en/function.extension-loaded.php) function.
 
 ```
 <?php
