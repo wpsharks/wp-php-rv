@@ -147,7 +147,7 @@ if(!function_exists('wp_php_rv_notice'))
 				$notice .= sprintf(__('<em>To remove this message, please install the required PHP %1$s. Or, remove %2$s from WordPress.</em>', $software_text_domain), esc_html($extensions_i18n), esc_html($software_name));
 			}
 		}
-		if($notice) // Only if there is a notice obviously; don't show an empty error messsage.
+		if($notice_action && $notice) // Only if there is a notice obviously; don't show an empty error messsage.
 			add_action($notice_action, create_function('', 'if(!current_user_can(\''.str_replace("'", "\\'", $notice_cap).'\'))'.
 			                                               '   return;'."\n". // User missing capability.
 
