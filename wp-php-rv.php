@@ -138,7 +138,7 @@ if(!function_exists('wp_php_rv_notice'))
 				$notice .= __('<em>A simple update is necessary. Please ask your hosting company to help resolve this quickly.</em>', $software_text_domain).'<br />';
 				$notice .= sprintf(__('<em>To remove this message, please upgrade PHP. Or, remove %1$s from WordPress.</em>', $software_text_domain), esc_html($software_name));
 			}
-			else if($missing['re']) // They have the required PHP version, but they are missing required PHP extension(s)?
+			else if($missing['re'] && $missing['re_list']) // They have the required PHP version, but they are missing required PHP extension(s)?
 			{
 				$notice = $php_icon_markup; // Start with the floated PHP icon markup.
 				$notice .= sprintf(__('<strong>%1$s is NOT active. PHP %2$s missing.</strong>', $software_text_domain), esc_html($software_name), esc_html($extensions_i18n)).'<br />';
@@ -147,18 +147,19 @@ if(!function_exists('wp_php_rv_notice'))
 				$notice .= sprintf(__('<em>To remove this message, please install the required PHP %1$s. Or, remove %2$s from WordPress.</em>', $software_text_domain), esc_html($extensions_i18n), esc_html($software_name));
 			}
 		}
-		add_action($notice_action, create_function('', 'if(!current_user_can(\''.str_replace("'", "\\'", $notice_cap).'\'))'.
-		                                               '   return;'."\n". // User missing capability.
+		if($notice) // Only if there is a notice obviously; don't show an empty error messsage.
+			add_action($notice_action, create_function('', 'if(!current_user_can(\''.str_replace("'", "\\'", $notice_cap).'\'))'.
+			                                               '   return;'."\n". // User missing capability.
 
-		                                               'echo \''. // Wrap `$notice` inside a WordPress error.
+			                                               'echo \''. // Wrap `$notice` inside a WordPress error.
 
-		                                               '<div class="error">'.
-		                                               '   <p>'.
-		                                               '      '.str_replace("'", "\\'", $notice).
-		                                               '   </p>'.
-		                                               '</div>'.
+			                                               '<div class="error">'.
+			                                               '   <p>'.
+			                                               '      '.str_replace("'", "\\'", $notice).
+			                                               '   </p>'.
+			                                               '</div>'.
 
-		                                               '\';'));
+			                                               '\';'));
 	}
 }
 /* --- API Function ---------------------------------------------------------------------------- */
