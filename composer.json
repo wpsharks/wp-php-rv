@@ -31,15 +31,5 @@
         "php": ">=5.2"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-
-    "autoload": {
-        "psr-4": {
-            "WebSharks\\WpPhpRv\\": "src/includes/classes/"
-        }
-    },
-
-    "config": {
-        "vendor-dir": "src/includes/vendor"
-    }
+    "prefer-stable": true
 }
