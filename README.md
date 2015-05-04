@@ -20,21 +20,21 @@ Stub for WordPress themes/plugins that require PHP vX.x+ (i.e. a minimum version
 	Text Domain: my-plugin
 */
 $GLOBALS['wp_php_rv'] = '5.3'; // Require PHP vX.x+ (you configure this).
-if(require('wp-php-rv/src/check.php')) // `TRUE` if running PHP vX.x+.
+if(require('wp-php-rv/src/includes/check.php')) // `TRUE` if running PHP vX.x+.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
 else wp_php_rv_notice(); // Creates a nice PHP vX.x+ dashboard notice for the site owner.
 ```
 
 ---
 
-### Understanding `if(require('wp-php-rv/src/check.php'))`
+### Understanding `if(require('wp-php-rv/src/includes/check.php'))`
 
-The `check.php` file will automatically return `TRUE` upon using `include()` or `require()` in your scripts; i.e., iff the installation site is running PHP vX.x+ (as configured by `$GLOBALS['wp_php_rv']`). Otherwise it returns `FALSE`. Therefore, the simplest way to run your check is to use `if(require('wp-php-rv/src/check.php'))`. **However**, you could also choose to do it this way.
+The `check.php` file will automatically return `TRUE` upon using `include()` or `require()` in your scripts; i.e., iff the installation site is running PHP vX.x+ (as configured by `$GLOBALS['wp_php_rv']`). Otherwise it returns `FALSE`. Therefore, the simplest way to run your check is to use `if(require('wp-php-rv/src/includes/check.php'))`. **However**, you could also choose to do it this way.
 
 ```php
 <?php
 $GLOBALS['wp_php_rv'] = '5.3'; // Require PHP vX.x+.
-require 'wp-php-rv/src/check.php'; // Include.
+require 'wp-php-rv/src/includes/check.php'; // Include.
 
 if(wp_php_rv()) // `TRUE` if running PHP vX.x+.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
@@ -48,12 +48,12 @@ else wp_php_rv_notice(); // Creates a nice PHP vX.x+ dashboard notice for the si
 ```php
 <?php
 $GLOBALS['wp_php_rv'] = '5.3'; // Require PHP vX.x+.
-if(require('wp-php-rv/src/check.php')) // `TRUE` if running PHP vX.x+.
+if(require('wp-php-rv/src/includes/check.php')) // `TRUE` if running PHP vX.x+.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
 else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software specifically.
 ```
 
-_NOTE: If you omit the `$software_name` argument, a default value is used instead. The default value is `ucwords('[calling file basedir]')`; e.g., if `/my-plugin/stub.php` calls `wp-php-rv/src/check.php`, the default `$software_name` automatically becomes `My Plugin`. Nice!_
+_NOTE: If you omit the `$software_name` argument, a default value is used instead. The default value is `ucwords('[calling file basedir]')`; e.g., if `/my-plugin/stub.php` calls `wp-php-rv/src/includes/check.php`, the default `$software_name` automatically becomes `My Plugin`. Nice!_
 
 ---
 
@@ -62,7 +62,7 @@ _NOTE: If you omit the `$software_name` argument, a default value is used instea
 ```php
 <?php
 $GLOBALS['wp_php_rv'] = '5.3'; // Require PHP vX.x+.
-if(require('wp-php-rv/src/check.php')) // `TRUE` if running PHP vX.x+.
+if(require('wp-php-rv/src/includes/check.php')) // `TRUE` if running PHP vX.x+.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
 else wp_php_rv_custom_notice('My Plugin requires PHP v5.3+'); // Custom Dashboard notice.
 ```
@@ -71,9 +71,9 @@ else wp_php_rv_custom_notice('My Plugin requires PHP v5.3+'); // Custom Dashboar
 
 ### What if Multiple Themes/Plugins Use This?
 
-This is fine! :-) The `wp-php-rv/src/check.php` file uses `function_exists()` as a wrapper; which allows it to be included any number of times, and by any number of plugins; and also from any number of locations. **The only thing to remember**, is that you MUST be sure to define `$GLOBALS['wp_php_rv']` each time; i.e., each time you `include('wp-php-rv/src/check.php')` or `require('wp-php-rv/src/check.php')`.
+This is fine! :-) The `wp-php-rv/src/includes/check.php` file uses `function_exists()` as a wrapper; which allows it to be included any number of times, and by any number of plugins; and also from any number of locations. **The only thing to remember**, is that you MUST be sure to define `$GLOBALS['wp_php_rv']` each time; i.e., each time you `include('wp-php-rv/src/includes/check.php')` or `require('wp-php-rv/src/includes/check.php')`.
 
-The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is specific to your plugin requirements, so it should be defined explicitly by each plugin developer before they `include('wp-php-rv/src/check.php')` or `require('wp-php-rv/src/check.php')`.
+The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is specific to your plugin requirements, so it should be defined explicitly by each plugin developer before they `include('wp-php-rv/src/includes/check.php')` or `require('wp-php-rv/src/includes/check.php')`.
 
 ---
 
@@ -95,7 +95,7 @@ Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or 
 $GLOBALS['wp_php_rv']['rv'] = '5.3';
 $GLOBALS['wp_php_rv']['re'] = array('curl', 'mbstring');
 
-if(require('wp-php-rv/src/check.php')) // `TRUE` if running PHP vX.x+ w/ all required extensions.
+if(require('wp-php-rv/src/includes/check.php')) // `TRUE` if running PHP vX.x+ w/ all required extensions.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
 else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software specifically.
 ```
