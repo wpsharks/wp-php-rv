@@ -2,7 +2,7 @@
 
 Stub for WordPress themes/plugins that require PHP vX.x+ (i.e. a minimum version that you define).
 
-![screenshot](screenshot.png)
+![](assets/screenshot.png)
 
 ---
 

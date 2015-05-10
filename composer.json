@@ -31,12 +31,5 @@
         "php": ">=5.2"
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-
-    "archive": {
-        "exclude": [
-            "/assets",
-            "/tests"
-        ]
-    }
+    "prefer-stable": true
 }
