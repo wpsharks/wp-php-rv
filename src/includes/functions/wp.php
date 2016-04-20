@@ -4,7 +4,7 @@
  *
  * @since 141004 First documented version.
  *
- * @copyright WebSharks, Inc. <http://www.websharks-inc.com>
+ * @copyright WebSharks, Inc. <http://websharks-inc.com>
  * @license GNU General Public License, version 3
  */
 
@@ -25,8 +25,7 @@ function wp_php_rv()
         if ($_extension && is_string($_extension) && !extension_loaded($_extension)) {
             return false; // Missing extension!
         }
-    }
-    unset($_extension); // Housekeeping.
+    } // unset($_extension); // Housekeeping.
 
     return true; // Good-to-go!
 }
@@ -42,8 +41,7 @@ function wp_php_rv_missing()
     if (isset($GLOBALS['wp_php_rv'])) {
         ___wp_php_rv_initialize();
     }
-    $missing_rv = // Missing required PHP version?
-        !version_compare(PHP_VERSION, $GLOBALS['___wp_php_rv']['rv'], '>=');
+    $missing_rv = !version_compare(PHP_VERSION, $GLOBALS['___wp_php_rv']['rv'], '>=');
     $missing_rv = $missing_rv ? $GLOBALS['___wp_php_rv']['rv'] : '';
 
     $missing_re      = array(); // Missing extensions.
@@ -53,15 +51,13 @@ function wp_php_rv_missing()
         if ($_extension && is_string($_extension) && !extension_loaded($_extension)) {
             $missing_re[] = $_extension; // Missing extension!
         }
-    }
-    unset($_extension); // Housekeeping.
+    } // unset($_extension); // Housekeeping.
 
     if ($missing_re) {
         foreach ($missing_re as $_re) {
             $missing_re_list .= '<code><a href="http://php.net/manual/en/book.'.urlencode($_re).'.php" target="_blank">'.esc_html($_re).'</a></code>, ';
-        }
+        } // unset($_re); // Housekeeping.
         $missing_re_list = trim($missing_re_list, ', ');
-        unset($_re); // Housekeeping.
     }
     if ($missing_rv || $missing_re) {
         return array('rv' => $missing_rv, 're' => $missing_re, 're_list' => $missing_re_list);
@@ -105,8 +101,7 @@ function wp_php_rv_notice($software_name = '', $software_text_domain = '', $noti
             if (($_calling_file_basedir = strtolower(basename(dirname($_debug_backtrace[1]['file']))))) {
                 $software_name = ucwords(trim(preg_replace('/[^a-z0-9]+/i', ' ', $_calling_file_basedir)));
             }
-        }
-        unset($_debug_backtrace, $_calling_file_basedir); // Housekeeping.
+        } // unset($_debug_backtrace, $_calling_file_basedir); // Housekeeping.
     }
     if (!$software_text_domain) {
         $software_text_domain = trim(preg_replace('/[^a-z0-9\-]/i', '-', strtolower($software_name)), '-');
