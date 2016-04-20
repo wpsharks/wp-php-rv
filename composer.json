@@ -26,7 +26,9 @@
     "issues": "https://github.com/websharks/wp-php-rv/issues"
   },
 
-  "require": {},
+  "require": {
+    "php": ">=5.2"
+  },
   "require-dev": {},
   "minimum-stability": "dev",
   "prefer-stable": true,
