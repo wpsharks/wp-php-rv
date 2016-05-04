@@ -4,7 +4,7 @@
 - Reorganizing functions into multiple files.
 - Backward compatibility was preserved in all cases.
 
-![](https://raw.githubusercontent.com/websharks/wp-php-rv/000000-dev/assets/screenshot.png)
+![](https://github.com/websharks/wp-php-rv/raw/000000-dev/assets/screenshot.png)
 
 ## v160420
 
