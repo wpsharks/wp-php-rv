@@ -82,6 +82,7 @@ Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or 
 <?php
 $GLOBALS['wp_php_rv']['min'] = '5.3';
 // $GLOBALS['wp_php_rv']['max'] = '7.0.4';
+// $GLOBALS['wp_php_rv']['bits'] = 64;
 $GLOBALS['wp_php_rv']['extensions'] = array('curl', 'mbstring');
 
 if(require('wp-php-rv/src/includes/check.php')) // `true` if running PHP vX.x+ w/ all required extensions.

@@ -42,6 +42,7 @@ function wp_php_rv_notice($brand_name = '')
 
     $min_version         = $GLOBALS['___wp_php_rv']['min'];
     $max_version         = $GLOBALS['___wp_php_rv']['max'];
+    $minimum_bits        = $GLOBALS['___wp_php_rv']['bits'];
     $required_extensions = $GLOBALS['___wp_php_rv']['extensions'];
 
     # Determine reason for PHP dependency failure.
@@ -52,6 +53,8 @@ function wp_php_rv_notice($brand_name = '')
         $reason = 'needs-upgrade';
     } elseif ($max_version && version_compare(PHP_VERSION, $max_version, '>')) {
         $reason = 'needs-downgrade';
+    } elseif ($minimum_bits && $minimum_bits / 8 > PHP_INT_SIZE) {
+        $reason = 'missing-bits';
     } elseif ($required_extensions) {
         foreach ($required_extensions as $_required_extension) {
             if (!extension_loaded($_required_extension)) {
@@ -111,6 +114,18 @@ function wp_php_rv_notice($brand_name = '')
             $markup     .= sprintf(__('This software is compatible up to PHP v%1$s, but you\'re running the newer PHP v%2$s.', 'wp-php-rv'), esc_html($max_version), esc_html($version)).'<br />';
             $markup     .= $arrow.' '.__('A downgrade is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, downgrade PHP or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
+            $markup .= '</p>';
+            break; // All done here.
+
+        case 'missing-bits': // Upgrade to a more powerful architecture.
+            $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
+            $markup     .= __('System Upgrade Required', 'wp-php-rv');
+            $markup .= '</p>';
+            $markup .= '<p style="margin:0 0 .5em 0;">';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires PHP on a %2$s-bit+ architecture.', 'wp-php-rv'), esc_html($brand_name), esc_html($minimum_bits)).'<br />';
+            $markup     .= sprintf(__('You\'re running an older %1$s-bit architecture, which is not supported by %2$s.', 'wp-php-rv'), esc_html(PHP_INT_SIZE * 8), esc_html($brand_name)).'<br />';
+            $markup     .= $arrow.' '.__('An update is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
+            $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, upgrade your system or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
 

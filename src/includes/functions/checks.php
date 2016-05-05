@@ -22,19 +22,22 @@ function wp_php_rv()
     }
     $min_version         = $GLOBALS['___wp_php_rv']['min'];
     $max_version         = $GLOBALS['___wp_php_rv']['max'];
+    $minimum_bits        = $GLOBALS['___wp_php_rv']['bits'];
     $required_extensions = $GLOBALS['___wp_php_rv']['extensions'];
 
     if ($min_version && version_compare(PHP_VERSION, $min_version, '<')) {
         return false;
     } elseif ($max_version && version_compare(PHP_VERSION, $max_version, '>')) {
         return false;
+    } elseif ($minimum_bits && $minimum_bits / 8 > PHP_INT_SIZE) {
+        return false;
+    } elseif ($required_extensions) {
+        foreach ($required_extensions as $_required_extension) {
+            if (!extension_loaded($_required_extension)) {
+                return false;
+            }
+        } // unset($_required_extension); // Housekeeping.
     }
-    foreach ($required_extensions as $_required_extension) {
-        if (!extension_loaded($_required_extension)) {
-            return false;
-        }
-    } // unset($_required_extension); // Housekeeping.
-
     return true;
 }
 
@@ -51,6 +54,7 @@ function ___wp_php_rv_initialize()
     $GLOBALS['___wp_php_rv'] = array(
         'min'        => '5.3',
         'max'        => '',
+        'bits'       => 0,
         'extensions' => array(),
     );
     if (!empty($GLOBALS['wp_php_rv'])) {
@@ -64,6 +68,9 @@ function ___wp_php_rv_initialize()
             }
             if (!empty($GLOBALS['wp_php_rv']['max'])) {
                 $GLOBALS['___wp_php_rv']['max'] = (string) $GLOBALS['wp_php_rv']['max'];
+            }
+            if (!empty($GLOBALS['wp_php_rv']['bits'])) {
+                $GLOBALS['___wp_php_rv']['bits'] = (int) $GLOBALS['wp_php_rv']['bits'];
             }
             if (!empty($GLOBALS['wp_php_rv']['extensions'])) {
                 $GLOBALS['___wp_php_rv']['extensions'] = (array) $GLOBALS['wp_php_rv']['extensions'];
