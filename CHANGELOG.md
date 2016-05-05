@@ -1,3 +1,9 @@
+## v160504
+
+- Adding support for required bits via `$GLOBALS['wp_php_rv']['bits'] = 64;`
+
+![2016-05-04_23-42-50](https://cloud.githubusercontent.com/assets/1563559/15038648/fb5fb04e-1251-11e6-96d6-af1a563413f1.png)
+
 ## v160503
 
 - Enhancing display of notice.

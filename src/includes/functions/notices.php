@@ -154,7 +154,7 @@ function wp_php_rv_notice($brand_name = '')
 
     # Attach an action to display the notice now.
 
-    add_action($action, create_function(
+    add_action($action, create_function(/* Closures require PHP 5.3+. */
         '',
         'if (!current_user_can(\'activate_plugins\')) return;'.
         'if (!apply_filters(\'wp_php_rv_notice_display\', true, get_defined_vars())) return;'.
@@ -168,7 +168,7 @@ function wp_php_rv_notice($brand_name = '')
 }
 
 /**
- * Back compat. function (rarely used).
+ * Last-ditch effort to find a brand name.
  *
  * @return string Name of the calling theme/plugin.
  */
