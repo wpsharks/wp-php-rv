@@ -152,7 +152,7 @@ function wp_php_rv_notice($brand_name = '')
             $markup .= '<p style="margin:0 0 .5em 0;">';
             $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires WP v%2$s (or higher).', 'wp-php-rv'), esc_html($brand_name), esc_html($wp_min_version)).'<br />';
             $markup     .= sprintf(__('You\'re currently running the older WP v%1$s, which is not supported by %2$s.', 'wp-php-rv'), esc_html($wp_version), esc_html($brand_name)).'<br />';
-            $markup     .= $arrow.' '.sprintf(__('An upgrade is necessary. <strong>Please <a href="%1$s">click here to upgrade now</a></strong>.', 'wp-php-rv'), esc_url(network_admin_url('/update-core.php?action_via=wp-php-rv'))).'<br />';
+            $markup     .= $arrow.' '.sprintf(__('An upgrade is necessary. <strong>Please <a href="%1$s">click here to upgrade now</a></strong>.', 'wp-php-rv'), esc_url(network_admin_url('/update-core.php'))).'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, upgrade WordPress or deactivate %1$s.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
@@ -189,9 +189,10 @@ function wp_php_rv_notice($brand_name = '')
 
         'if (!current_user_can(\'activate_plugins\')) return;'.
 
-        'if (in_array($pagenow, array(\'plugins.php\', \'themes.php\', \'update.php\', \'update-core.php\'), true)'.
+        'if (in_array($pagenow, array(\'update-core.php\'), true)) return;'.
+        'if (in_array($pagenow, array(\'plugins.php\', \'themes.php\', \'update.php\'), true)'.
         '    && !empty($_REQUEST[\'action_via\']) && $_REQUEST[\'action_via\'] === \'wp-php-rv\') return;'.
-        // Not during a plugin install/activate/update action.
+        // Not during a core update, and not during a plugin install/activate/update.
 
         'if (!apply_filters(\'wp_php_rv_notice_display\', true, get_defined_vars())) return;'.
 
