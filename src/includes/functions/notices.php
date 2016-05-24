@@ -189,7 +189,7 @@ function wp_php_rv_notice($brand_name = '')
 
         'if (!current_user_can(\'activate_plugins\')) return;'.
 
-        'if (in_array($pagenow, array(\'plugins.php\', \'themes.php\', \'update.php\'), true)'.
+        'if (in_array($pagenow, array(\'plugins.php\', \'themes.php\', \'update.php\', \'update-core.php\'), true)'.
         '    && !empty($_REQUEST[\'action_via\']) && $_REQUEST[\'action_via\'] === \'wp-php-rv\') return;'.
         // Not during a plugin install/activate/update action.
 
