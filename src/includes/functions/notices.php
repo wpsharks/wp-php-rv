@@ -23,7 +23,11 @@ function wp_php_rv_custom_notice()
  */
 function wp_php_rv_notice($brand_name = '')
 {
-    if (isset($GLOBALS['wp_php_rv'])) {
+    global $wp_php_rv;
+    global $___wp_php_rv;
+    global $wp_version;
+
+    if (isset($wp_php_rv)) {
         ___wp_php_rv_initialize();
     }
     # Only in the admin area.
@@ -38,40 +42,29 @@ function wp_php_rv_notice($brand_name = '')
     } // If brand name detection fails too, use generic.
     $brand_name = $brand_name ? $brand_name : 'This Software';
 
-    # Current WP Sharks Core versions.
+    # Current requirements/dependencies.
 
-    $min_version         = $GLOBALS['___wp_php_rv']['min'];
-    $max_version         = $GLOBALS['___wp_php_rv']['max'];
-    $minimum_bits        = $GLOBALS['___wp_php_rv']['bits'];
-    $required_extensions = $GLOBALS['___wp_php_rv']['extensions'];
+    $required_os             = $___wp_php_rv['os'];
+    $php_min_version         = $___wp_php_rv['min'];
+    $php_max_version         = $___wp_php_rv['max'];
+    $php_minimum_bits        = $___wp_php_rv['bits'];
+    $php_required_extensions = $___wp_php_rv['extensions'];
+    $wp_min_version          = $___wp_php_rv['wp']['min'];
+    $wp_max_version          = $___wp_php_rv['wp']['max'];
 
-    # Determine reason for PHP dependency failure.
+    # Determine reason for dependency failure.
 
-    $missing_extensions = array(); // Initialize.
-
-    if ($min_version && version_compare(PHP_VERSION, $min_version, '<')) {
-        $reason = 'needs-upgrade';
-    } elseif ($max_version && version_compare(PHP_VERSION, $max_version, '>')) {
-        $reason = 'needs-downgrade';
-    } elseif ($minimum_bits && $minimum_bits / 8 > PHP_INT_SIZE) {
-        $reason = 'missing-bits';
-    } elseif ($required_extensions) {
-        foreach ($required_extensions as $_required_extension) {
-            if (!extension_loaded($_required_extension)) {
-                $reason               = 'missing-extensions';
-                $missing_extensions[] = $_required_extension;
-            }
-        } // unset($_required_extension); // Housekeeping.
-    }
-    if (empty($reason)) {
+    if (!($issue = ___wp_php_rv_issue())) {
         return; // Nothing to do here.
-    }
+    } // If there is no issue we can stop here.
+    extract($issue); // `reason`, `php_missing_extensions`.
+
     # Fill-in additional variables needed down below.
 
     $action          = 'all_admin_notices';
     $action_priority = 10; // Default priority.
 
-    $version = strpos(PHP_VERSION, '+') !== false
+    $php_version = strpos(PHP_VERSION, '+') !== false
         ? strstr(PHP_VERSION, '+', true) : PHP_VERSION;
         // e.g., minus `+donate.sury.org~trusty+1`, etc.
 
@@ -93,50 +86,86 @@ function wp_php_rv_notice($brand_name = '')
 
     switch ($reason) { // Based on reason.
 
-        case 'needs-upgrade': // Upgrade to latest version of PHP.
+        case 'os-incompatible': // OS incomaptible.
+            $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
+            $markup     .= __('Incompatible Operating System', 'wp-php-rv');
+            $markup .= '</p>';
+            $markup .= '<p style="margin:0 0 .5em 0;">';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires a %2$s operating system.', 'wp-php-rv'), esc_html($brand_name), esc_html(___wp_php_rv_os_name($required_os))).'<br />';
+            $markup     .= sprintf(__('You\'re currently running %1$s, which is not supported by %2$s at this time.', 'wp-php-rv'), esc_html(PHP_OS), esc_html($brand_name)).'<br />';
+            $markup     .= $arrow.' '.__('A compatible OS is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
+            $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, change the OS or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
+            $markup .= '</p>';
+            break; // All done here.
+
+        case 'php-needs-upgrade': // Upgrade to latest version of PHP.
             $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
             $markup     .= __('PHP Upgrade Required', 'wp-php-rv');
             $markup .= '</p>';
             $markup .= '<p style="margin:0 0 .5em 0;">';
-            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires PHP v%2$s (or higher).', 'wp-php-rv'), esc_html($brand_name), esc_html($min_version)).'<br />';
-            $markup     .= sprintf(__('You\'re currently running the older PHP v%1$s, which is not supported by %2$s.', 'wp-php-rv'), esc_html($version), esc_html($brand_name)).'<br />';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires PHP v%2$s (or higher).', 'wp-php-rv'), esc_html($brand_name), esc_html($php_min_version)).'<br />';
+            $markup     .= sprintf(__('You\'re currently running the older PHP v%1$s, which is not supported by %2$s.', 'wp-php-rv'), esc_html($php_version), esc_html($brand_name)).'<br />';
             $markup     .= $arrow.' '.__('An update is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, upgrade PHP or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
 
-        case 'needs-downgrade': // Downgrade to older version of PHP.
+        case 'php-needs-downgrade': // Downgrade to older version of PHP.
             $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
             $markup     .= __('PHP Downgrade Required', 'wp-php-rv');
             $markup .= '</p>';
             $markup .= '<p style="margin:0 0 .5em 0;">';
             $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires an older version of PHP.', 'wp-php-rv'), esc_html($brand_name)).'<br />';
-            $markup     .= sprintf(__('This software is compatible up to PHP v%1$s, but you\'re running the newer PHP v%2$s.', 'wp-php-rv'), esc_html($max_version), esc_html($version)).'<br />';
+            $markup     .= sprintf(__('This software is compatible up to PHP v%1$s, but you\'re running the newer PHP v%2$s.', 'wp-php-rv'), esc_html($php_max_version), esc_html($php_version)).'<br />';
             $markup     .= $arrow.' '.__('A downgrade is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, downgrade PHP or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
 
-        case 'missing-bits': // Upgrade to a more powerful architecture.
+        case 'php-missing-bits': // Upgrade to a more powerful architecture.
             $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
             $markup     .= __('System Upgrade Required', 'wp-php-rv');
             $markup .= '</p>';
             $markup .= '<p style="margin:0 0 .5em 0;">';
-            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires PHP on a %2$s-bit+ architecture.', 'wp-php-rv'), esc_html($brand_name), esc_html($minimum_bits)).'<br />';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires PHP on a %2$s-bit+ architecture.', 'wp-php-rv'), esc_html($brand_name), esc_html($php_minimum_bits)).'<br />';
             $markup     .= sprintf(__('You\'re running an older %1$s-bit architecture, which is not supported by %2$s.', 'wp-php-rv'), esc_html(PHP_INT_SIZE * 8), esc_html($brand_name)).'<br />';
             $markup     .= $arrow.' '.__('An update is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, upgrade your system or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
 
-        case 'missing-extensions': // PHP is missing required extensions.
+        case 'php-missing-extensions': // PHP is missing required extensions.
             $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
             $markup     .= __('PHP Extension(s) Missing', 'wp-php-rv');
             $markup .= '</p>';
             $markup .= '<p style="margin:0 0 .5em 0;">';
-            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It depends on PHP extension(s): %2$s.', 'wp-php-rv'), esc_html($brand_name), '<code>'.implode('</code>, <code>', array_map('esc_html', $missing_extensions)).'</code>').'<br />';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It depends on PHP extension(s): %2$s.', 'wp-php-rv'), esc_html($brand_name), '<code>'.implode('</code>, <code>', array_map('esc_html', $php_missing_extensions)).'</code>').'<br />';
             $markup     .= $arrow.' '.__('An action is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
             $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, enable missing extension(s) or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
+            $markup .= '</p>';
+            break; // All done here.
+
+        case 'wp-needs-upgrade': // Upgrade to latest version of WP.
+            $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
+            $markup     .= __('WP Upgrade Required', 'wp-php-rv');
+            $markup .= '</p>';
+            $markup .= '<p style="margin:0 0 .5em 0;">';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires WP v%2$s (or higher).', 'wp-php-rv'), esc_html($brand_name), esc_html($wp_min_version)).'<br />';
+            $markup     .= sprintf(__('You\'re currently running the older WP v%1$s, which is not supported by %2$s.', 'wp-php-rv'), esc_html($wp_version), esc_html($brand_name)).'<br />';
+            $markup     .= $arrow.' '.sprintf(__('An upgrade is necessary. <strong>Please <a href="%1$s">click here to upgrade now</a></strong>.', 'wp-php-rv'), esc_url(network_admin_url('/update-core.php'))).'<br />';
+            $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, upgrade WordPress or deactivate %1$s.</em>', 'wp-php-rv'), esc_html($brand_name));
+            $markup .= '</p>';
+            break; // All done here.
+
+        case 'wp-needs-downgrade': // Downgrade to older version of WP.
+            $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
+            $markup     .= __('WP Downgrade Required', 'wp-php-rv');
+            $markup .= '</p>';
+            $markup .= '<p style="margin:0 0 .5em 0;">';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It requires an older version of WP.', 'wp-php-rv'), esc_html($brand_name)).'<br />';
+            $markup     .= sprintf(__('This software is compatible up to WP v%1$s, but you\'re running the newer WP v%2$s.', 'wp-php-rv'), esc_html($wp_max_version), esc_html($wp_version)).'<br />';
+            $markup     .= $arrow.' '.sprintf(__('A downgrade is necessary. <strong>Please see: <a href="%1$s">WordPress.org release archive</a></strong>.', 'wp-php-rv'), esc_url('https://wordpress.org/download/release-archive/')).'<br />';
+            $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, downgrade WordPress or deactivate %1$s.</em>', 'wp-php-rv'), esc_html($brand_name));
             $markup .= '</p>';
             break; // All done here.
 

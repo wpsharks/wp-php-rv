@@ -1,3 +1,9 @@
+## v160524
+
+- Adding support for an array of compatible operating systems.
+- Adding support for a minimum version of WordPress.
+- Adding support for a maximum version of WordPress.
+
 ## v160504
 
 - Adding support for required bits via `$GLOBALS['wp_php_rv']['bits'] = 64;`

@@ -57,7 +57,7 @@ else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software s
 
 ---
 
-### What if Multiple Themes/Plugins Use This?
+### What if multiple themes/plugins use this?
 
 This is fine! :-) The `wp-php-rv/src/includes/check.php` file uses `function_exists()` as a wrapper; which allows it to be included any number of times, and by any number of plugins; and also from any number of locations. **The only thing to remember**, is that you MUST be sure to define `$GLOBALS['wp_php_rv']` each time; i.e., each time you `include('wp-php-rv/src/includes/check.php')` or `require('wp-php-rv/src/includes/check.php')`.
 
@@ -65,7 +65,7 @@ The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is sp
 
 ---
 
-### Can this Just Go at the Top of My Existing Theme/Plugin File?
+### Can this just go at the top of my existing theme/plugin file?
 
 **No, there are two important things to remember.**
 
@@ -74,18 +74,44 @@ The point here, is that `$GLOBALS['wp_php_rv']` defines a PHP version that is sp
 
 ---
 
-### Can I Test for Required PHP Extensions Too?
+### Can I test for required PHP extensions too?
 
 Yes, `$GLOBALS['wp_php_rv']` can be either a string with a required version, or an array with both a required version and a nested array of required PHP extensions. The easiest way to show how this works is by example (as seen below). Note that your array of required PHP extensions must be compatible with PHP's [`extension_loaded()`](http://php.net/manual/en/function.extension-loaded.php) function.
 
 ```php
 <?php
 $GLOBALS['wp_php_rv']['min'] = '5.3';
-// $GLOBALS['wp_php_rv']['max'] = '7.0.4';
-// $GLOBALS['wp_php_rv']['bits'] = 64;
 $GLOBALS['wp_php_rv']['extensions'] = array('curl', 'mbstring');
 
 if(require('wp-php-rv/src/includes/check.php')) // `true` if running PHP vX.x+ w/ all required extensions.
+	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
+else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software specifically.
+```
+
+---
+
+### What else can I test for with this system?
+
+You can test for a compatible OS, a compatible PHP version, required bits, required PHP extensions, and a compatible WP version.
+
+```php
+<?php
+$GLOBALS['wp_php_rv']['os'] = 'nix'; // Requires a Unix-like OS.
+// This is one of two operating system identifiers (always in lowercase): `nix` or `win`
+// As far as WP PHP RV is concerned, their OS is either `nix` (Unix-like) or `win` (Windows).
+// If you only want to support Unix-like systems, set this to: `nix`, making Windows incompatible.
+// If you only want to support Windows systems, set this to: `win`, making others incompatible.
+
+$GLOBALS['wp_php_rv']['min'] = '5.3'; // Minimum PHP version.
+$GLOBALS['wp_php_rv']['max'] = '7.0.4'; // Max compatible PHP version, if applicable.
+
+$GLOBALS['wp_php_rv']['bits'] = 64; // e.g., 32 or 64 bit architecture.
+$GLOBALS['wp_php_rv']['extensions'] = array('curl', 'mbstring');
+
+$GLOBALS['wp_php_rv']['wp']['min'] = '4.2'; // Minimum WP version.
+$GLOBALS['wp_php_rv']['wp']['max'] = '4.5.2'; // Max compatible WP version, if applicable.
+
+if(require('wp-php-rv/src/includes/check.php')) // `true` if no issue.
 	require dirname(__FILE__).'/my-plugin-code.php'; // It's OK to load your plugin.
 else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software specifically.
 ```
