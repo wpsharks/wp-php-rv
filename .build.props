@@ -1,0 +1,12 @@
+project_title                               = WP PHP RV
+
+project_owner                               = websharks
+project_slug                                = wp-php-rv
+
+project_namespace                           = WebSharks\\WpPhpRv
+project_sub_namespace                       = WpPhpRv
+
+project_version                             = %y%m%d.%now
+
+project_php_required_version                = 5.2.4
+project_php_tested_up_to_version            = ${php.version}
