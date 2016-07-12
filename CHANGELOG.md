@@ -1,4 +1,4 @@
-## $v
+## v160712.42603
 
 - **Bug fix:** Required PHP extension checks failing.
 - **New Feature:** Now possible to require specific PHP functions too; e.g., `eval()`.
