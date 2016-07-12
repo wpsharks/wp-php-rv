@@ -92,7 +92,7 @@ else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software s
 
 ### What else can I test for with this system?
 
-A compatible OS, a compatible PHP version, required bits, required PHP extensions, and a compatible WP version.
+A compatible OS, a compatible PHP version, required bits, required PHP functions, required PHP extensions, and a compatible WP version.
 
 ```php
 <?php
@@ -106,6 +106,7 @@ $GLOBALS['wp_php_rv']['min'] = '5.3'; // Minimum PHP version.
 $GLOBALS['wp_php_rv']['max'] = '7.0.4'; // Max compatible PHP version, if applicable.
 
 $GLOBALS['wp_php_rv']['bits'] = 64; // e.g., 32 or 64 bit architecture.
+$GLOBALS['wp_php_rv']['functions']  = array('eval'); // Functions (or constructs).
 $GLOBALS['wp_php_rv']['extensions'] = array('curl', 'mbstring'); // See previous FAQ.
 
 $GLOBALS['wp_php_rv']['wp']['min'] = '4.2'; // Minimum WP version.
