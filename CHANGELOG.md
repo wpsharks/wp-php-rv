@@ -1,3 +1,10 @@
+## $v
+
+- **Bug fix:** Required PHP extension checks failing.
+- **New Feature:** Now possible to require specific PHP functions too; e.g., `eval()`.
+- Updating to latest phing build system.
+- Updating dotfiles.
+
 ## v160531.14034
 
 - Adding phing build files.

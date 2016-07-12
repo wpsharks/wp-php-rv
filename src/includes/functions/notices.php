@@ -40,7 +40,7 @@ function wp_php_rv_notice($brand_name = '')
     if (!($brand_name = (string) $brand_name)) {
         $brand_name = ___wp_php_rv_notice_brand_name();
     } // If brand name detection fails too, use generic.
-    $brand_name = $brand_name ? $brand_name : 'This Software';
+    $brand_name = $brand_name ? $brand_name : __('This Software', 'wp-php-rv');
 
     # Current requirements/dependencies.
 
@@ -48,6 +48,7 @@ function wp_php_rv_notice($brand_name = '')
     $php_min_version         = $___wp_php_rv['min'];
     $php_max_version         = $___wp_php_rv['max'];
     $php_minimum_bits        = $___wp_php_rv['bits'];
+    $php_required_functions  = $___wp_php_rv['functions'];
     $php_required_extensions = $___wp_php_rv['extensions'];
     $wp_min_version          = $___wp_php_rv['wp']['min'];
     $wp_max_version          = $___wp_php_rv['wp']['max'];
@@ -57,7 +58,7 @@ function wp_php_rv_notice($brand_name = '')
     if (!($issue = ___wp_php_rv_issue())) {
         return; // Nothing to do here.
     } // If there is no issue we can stop here.
-    extract($issue); // `reason`, `php_missing_extensions`.
+    extract($issue); // `reason`, `php_missing_functions`, `php_missing_extensions`.
 
     # Fill-in additional variables needed down below.
 
@@ -134,6 +135,17 @@ function wp_php_rv_notice($brand_name = '')
             $markup .= '</p>';
             break; // All done here.
 
+        case 'php-missing-functions': // PHP is missing required functions.
+            $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
+            $markup     .= __('PHP Function(s) Missing', 'wp-php-rv');
+            $markup .= '</p>';
+            $markup .= '<p style="margin:0 0 .5em 0;">';
+            $markup     .= $icon.sprintf(__('<strong>%1$s is not active.</strong> It depends on PHP function(s): %2$s.', 'wp-php-rv'), esc_html($brand_name), '<code>'.implode('</code>, <code>', array_map('esc_html', $php_missing_functions)).'</code>').'<br />';
+            $markup     .= $arrow.' '.__('An action is necessary. <strong>Please contact your hosting company for assistance</strong>.', 'wp-php-rv').'<br />';
+            $markup     .= sprintf(__('<em style="font-size:80%%; opacity:.7;">To remove this message, enable missing function(s) or remove %1$s from WordPress.</em>', 'wp-php-rv'), esc_html($brand_name));
+            $markup .= '</p>';
+            break; // All done here.
+
         case 'php-missing-extensions': // PHP is missing required extensions.
             $markup = '<p style="font-weight:bold; font-size:125%; margin:.25em 0 0 0;">';
             $markup     .= __('PHP Extension(s) Missing', 'wp-php-rv');
@@ -191,7 +203,7 @@ function wp_php_rv_notice($brand_name = '')
 
         'if (in_array($pagenow, array(\'update-core.php\'), true)) return;'.
         'if (in_array($pagenow, array(\'plugins.php\', \'themes.php\', \'update.php\'), true)'.
-        '    && !empty($_REQUEST[\'action_via\']) && $_REQUEST[\'action_via\'] === \'wp-php-rv\') return;'.
+        '    && !empty($_REQUEST[\'___action_via\']) && $_REQUEST[\'___action_via\'] === \'wp-php-rv\') return;'.
         // Not during a core update, and not during a plugin install/activate/update.
 
         'if (!apply_filters(\'wp_php_rv_notice_display\', true, get_defined_vars())) return;'.

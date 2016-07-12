@@ -36,35 +36,54 @@ function ___wp_php_rv_issue()
     if (isset($wp_php_rv)) {
         ___wp_php_rv_initialize();
     }
-    $required_os         = $___wp_php_rv['os'];
-    $min_version         = $___wp_php_rv['min'];
-    $max_version         = $___wp_php_rv['max'];
-    $minimum_bits        = $___wp_php_rv['bits'];
-    $required_extensions = $___wp_php_rv['extensions'];
-    $wp_min_version      = $___wp_php_rv['wp']['min'];
-    $wp_max_version      = $___wp_php_rv['wp']['max'];
+    $required_os             = $___wp_php_rv['os'];
+    $php_min_version         = $___wp_php_rv['min'];
+    $php_max_version         = $___wp_php_rv['max'];
+    $php_minimum_bits        = $___wp_php_rv['bits'];
+    $php_required_functions  = $___wp_php_rv['functions'];
+    $php_required_extensions = $___wp_php_rv['extensions'];
+    $wp_min_version          = $___wp_php_rv['wp']['min'];
+    $wp_max_version          = $___wp_php_rv['wp']['max'];
 
     if ($required_os && ___wp_php_rv_os() !== $required_os) {
         return array('reason' => 'os-incompatible');
-    } elseif ($min_version && version_compare(PHP_VERSION, $min_version, '<')) {
+    } elseif ($php_min_version && version_compare(PHP_VERSION, $php_min_version, '<')) {
         return array('reason' => 'php-needs-upgrade');
-    } elseif ($max_version && version_compare(PHP_VERSION, $max_version, '>')) {
+    } elseif ($php_max_version && version_compare(PHP_VERSION, $php_max_version, '>')) {
         return array('reason' => 'php-needs-downgrade');
-    } elseif ($minimum_bits && $minimum_bits / 8 > PHP_INT_SIZE) {
+    } elseif ($php_minimum_bits && $php_minimum_bits / 8 > PHP_INT_SIZE) {
         return array('reason' => 'php-missing-bits');
     }
-    if ($required_extensions) { // Requires PHP extensions?
-        $missing_extensions = array(); // Initialize.
+    if ($php_required_functions) { // Requires PHP functions?
+        $php_missing_functions = array(); // Initialize.
 
-        foreach ($required_extensions as $_required_extension) {
+        foreach ($php_required_functions as $_required_function) {
+            if (!___wp_php_rv_can_call_func($_required_function)) {
+                $php_missing_functions[] = $_required_function;
+            } // See also: <http://jas.xyz/29Bdz3N>
+        } // unset($_required_function); // Housekeeping.
+
+        if ($php_missing_functions) { // Missing PHP functions?
+            return array(
+                'php_missing_functions' => $php_missing_functions,
+                'reason'                => 'php-missing-functions',
+            );
+        }
+    }
+    if ($php_required_extensions) { // Requires PHP extensions?
+        $php_missing_extensions = array(); // Initialize.
+
+        foreach ($php_required_extensions as $_required_extension) {
             if (!extension_loaded($_required_extension)) {
                 $php_missing_extensions[] = $_required_extension;
             } // See also: <http://jas.xyz/1TtzgX5>
         } // unset($_required_extension); // Housekeeping.
 
-        if ($missing_extensions) { // Missing PHP extensions?
-            return array('php_missing_extensions' => $php_missing_extensions,
-                         'reason'                 => 'php-missing-extensions', );
+        if ($php_missing_extensions) { // Missing PHP extensions?
+            return array(
+                'php_missing_extensions' => $php_missing_extensions,
+                'reason'                 => 'php-missing-extensions',
+            );
         }
     }
     if ($wp_min_version && version_compare($wp_version, $wp_min_version, '<')) {
@@ -93,6 +112,7 @@ function ___wp_php_rv_initialize()
         'min'        => '',
         'max'        => '',
         'bits'       => 0,
+        'functions'  => array(),
         'extensions' => array(),
         'wp'         => array(
             'min' => '',
@@ -116,6 +136,9 @@ function ___wp_php_rv_initialize()
             }
             if (!empty($wp_php_rv['bits'])) {
                 $___wp_php_rv['bits'] = (int) $wp_php_rv['bits'];
+            }
+            if (!empty($wp_php_rv['functions'])) {
+                $___wp_php_rv['functions'] = (array) $wp_php_rv['functions'];
             }
             if (!empty($wp_php_rv['extensions'])) {
                 $___wp_php_rv['extensions'] = (array) $wp_php_rv['extensions'];
