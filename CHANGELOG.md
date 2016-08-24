@@ -1,3 +1,7 @@
+## $v
+
+- Bug fix. Array not initialized properly. See: #12
+
 ## v160712.42603
 
 - **Bug fix:** Required PHP extension checks failing.
