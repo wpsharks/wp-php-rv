@@ -1,4 +1,4 @@
-## $v
+## v160824.6416
 
 - Bug fix. Array not initialized properly. See: #12
 
