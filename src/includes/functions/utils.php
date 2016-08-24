@@ -53,7 +53,8 @@ function ___wp_php_rv_os_name($os)
  */
 function ___wp_php_rv_can_call_func($function)
 {
-    static $constructs = [
+    static $can        = array();
+    static $constructs = array(
         'die',
         'echo',
         'empty',
@@ -69,13 +70,15 @@ function ___wp_php_rv_can_call_func($function)
         'print',
         'unset',
         '__halt_compiler',
-    ];
-    static $functions_disabled, $can = [];
+    );
+    static $functions_disabled; // Set below.
 
     if (isset($can[$function = strtolower($function)])) {
         return $can[$function]; // Already cached this.
     }
     if (!isset($functions_disabled)) {
+        $functions_disabled = array(); // Initialize.
+
         if (($_ini_disable_functions = (string) @ini_get('disable_functions'))) {
             $_ini_disable_functions = strtolower($_ini_disable_functions);
             $functions_disabled     = array_merge($functions_disabled, preg_split('/[\s;,]+/u', $_ini_disable_functions, -1, PREG_SPLIT_NO_EMPTY));
