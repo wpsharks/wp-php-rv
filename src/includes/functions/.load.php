@@ -11,6 +11,8 @@
 /*
  * Load all functions.
  */
-require_once dirname(__FILE__).'/utils.php';
 require_once dirname(__FILE__).'/checks.php';
 require_once dirname(__FILE__).'/notices.php';
+require_once dirname(__FILE__).'/os-utils.php';
+require_once dirname(__FILE__).'/php-utils.php';
+require_once dirname(__FILE__).'/versions.php';

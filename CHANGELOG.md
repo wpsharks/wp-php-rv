@@ -1,3 +1,16 @@
+## $v
+
+- Adding `src/includes/os-utils.php`.
+- Adding `src/includes/php-utils.php`.
+- Adding `src/includes/versions.php`.
+- Adding `___wp_php_rv_get_php_version()`.
+- Minor enhancements in `wp_php_rv_notice()`.
+- Minor enhancements in `___wp_php_rv_notice_brand_name()`.
+- Removing very old (already-deprecated) function `wp_php_rv_custom_notice()` entirely. You should be using `wp_php_rv_notice()` instead please.
+- Remove unused filter `wp_php_rv_notice_refs_before_markup`.
+- Remove unused filter `wp_php_rv_notice_refs`.
+- New filter: `wp_php_rv_notice_markup`.
+
 ## v160824.6416
 
 - Bug fix. Array not initialized properly. See: #12

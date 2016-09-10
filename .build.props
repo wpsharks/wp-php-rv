@@ -3,6 +3,7 @@ project_title                               = WP PHP RV
 project_owner                               = websharks
 project_slug                                = wp-php-rv
 project_text_domain                         = wp-php-rv
+project_slack_channel                       = wp-php-rv
 
 project_namespace                           = WebSharks\\WpPhpRv
 project_sub_namespace                       = WpPhpRv

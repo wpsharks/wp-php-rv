@@ -15,9 +15,9 @@
  *
  * @return bool True if no issue.
  */
-function wp_php_rv() // See below.
+function wp_php_rv()
 {
-    return ___wp_php_rv_issue() ? false : true;
+    return !___wp_php_rv_issue();
 }
 
 /**
@@ -31,7 +31,6 @@ function ___wp_php_rv_issue()
 {
     global $wp_php_rv;
     global $___wp_php_rv;
-    global $wp_version;
 
     if (isset($wp_php_rv)) {
         ___wp_php_rv_initialize();
@@ -44,6 +43,7 @@ function ___wp_php_rv_issue()
     $php_required_extensions = $___wp_php_rv['extensions'];
     $wp_min_version          = $___wp_php_rv['wp']['min'];
     $wp_max_version          = $___wp_php_rv['wp']['max'];
+    $wp_cur_version          = ___wp_php_rv_get_wp_version();
 
     if ($required_os && ___wp_php_rv_os() !== $required_os) {
         return array('reason' => 'os-incompatible');
@@ -86,12 +86,12 @@ function ___wp_php_rv_issue()
             );
         }
     }
-    if ($wp_min_version && version_compare($wp_version, $wp_min_version, '<')) {
+    if ($wp_min_version && version_compare($wp_cur_version, $wp_min_version, '<')) {
         return array('reason' => 'wp-needs-upgrade');
-    } elseif ($wp_max_version && version_compare($wp_version, $wp_max_version, '>')) {
+    } elseif ($wp_max_version && version_compare($wp_cur_version, $wp_max_version, '>')) {
         return array('reason' => 'wp-needs-downgrade');
     }
-    return array(); // No problem.
+    return array(); // No issue.
 }
 
 /**
