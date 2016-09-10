@@ -119,6 +119,12 @@ else wp_php_rv_notice('My Plugin'); // Dashboard notice mentions your software s
 
 ---
 
+### PHP Compatibility
+
+Please note that the WP PHP RV software itself requires PHP v5.2 or higher, the same as WordPress core.
+
+---
+
 Copyright: © 2015 [WebSharks, Inc.](http://www.websharks-inc.com/bizdev/) (coded in the USA)
 
 Released under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl-3.0.html).
