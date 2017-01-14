@@ -8,7 +8,7 @@
  * @license GNU General Public License, version 3
  */
 if (!defined('WPINC')) {
-    exit('Do NOT access this file directly: '.basename(__FILE__));
+    exit('Do NOT access this file directly.');
 }
 if (!function_exists('wp_php_rv')) {
     require_once dirname(__FILE__).'/functions/.load.php';
